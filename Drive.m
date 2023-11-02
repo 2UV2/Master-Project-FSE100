@@ -1,13 +1,11 @@
 brick.ResetMotorAngle('A');
 brick.ResetMotorAngle('B');
+
 MoveForward(brick);
 
 while true
-
     HitWall(brick);
-   
-
-    pause(0.2);
+    OverColoredLine(brick);
 end
 
 % Reactive Functions
@@ -28,11 +26,34 @@ function HitWall(Robot)
     end
 end
 
+function OverColoredLine(Robot)
+    if Robot.ColorCode(3) == 4
+        pause(2);
+        Robot.StopAllMotors('Brake');
+        pause(1);
+        TurnAround(Robot);
+        pause(1);
+        MoveForward(Robot);
+    end
+end
 
+function Check = CheckWallOnRight(Robot)
+    if Robot.UltrasonicDist(4) < 20
+        Check = true;
+        return
+    else 
+        Check = false;
+        return
+    end
+end
+
+function PickUpClaw(Robot)
+    Robot.MoveMotor('C',-100);
+end
 % Turn Functions
 
 function MoveForward(Robot)
-    Robot.MoveMotor('AB',-50);
+    Robot.MoveMotor('AB',-80);
 end
 
 
@@ -53,15 +74,9 @@ function TurnLeft(Robot)
 end
 
 function TurnAround(Robot)
-    
-end
-
-function Check = CheckWallOnRight(Robot)
-    if Robot.UltrasonicDist(4) < 15
-        Check = true;
-        return
-    else 
-        Check = false;
-        return
-    end
+    Robot.ResetMotorAngle('A');
+    Robot.MoveMotorAngleRel('A',100,1940, 'Brake');
+    pause(6);
+    Robot.ResetMotorAngle('A');
+    Robot.MoveMotorAngleRel('A',100,1940, 'Brake');
 end
