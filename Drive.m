@@ -16,11 +16,14 @@ function HitWall(Robot)
         pause(3);
         Robot.StopAllMotors('Brake');
         pause(1);
-        if CheckWallOnRight(Robot) 
+        if CheckWallOnRight(Robot) == 1
             TurnLeft(Robot);
-        else
+            disp(Robot.UltrasonicDist(4));
+        elseif CheckWallOnRight(Robot) == 0
             TurnRight(Robot);
+            disp(Robot.UltrasonicDist(4));
         end
+        disp(CheckWallOnRight(Robot));
         pause(6);
         MoveForward(Robot);
     end
@@ -32,23 +35,30 @@ function OverColoredLine(Robot)
         Robot.StopAllMotors('Brake');
         pause(1);
         TurnAround(Robot);
-        pause(1);
+        pause(3);
+        PickUpClaw(Robot);
+        pause(3);
         MoveForward(Robot);
+        pause(3);
     end
 end
 
 function Check = CheckWallOnRight(Robot)
-    if Robot.UltrasonicDist(4) < 20
+    if Robot.UltrasonicDist(4) < 40
         Check = true;
         return
-    else 
+    end
+    if Robot.UltrasonicDist(4) > 40
         Check = false;
         return
     end
+    disp(Robot.UltrasonicDist(4));
 end
 
 function PickUpClaw(Robot)
     Robot.MoveMotor('C',-100);
+    pause(5);
+    Robot.StopMotor('C','Brake');
 end
 % Turn Functions
 
@@ -79,4 +89,5 @@ function TurnAround(Robot)
     pause(6);
     Robot.ResetMotorAngle('A');
     Robot.MoveMotorAngleRel('A',100,1940, 'Brake');
+    pause(6);
 end
