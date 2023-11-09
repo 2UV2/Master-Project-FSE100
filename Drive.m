@@ -3,9 +3,13 @@ brick.ResetMotorAngle('B');
 
 MoveForward(brick);
 
+
 while true
     HitWall(brick);
-    OverColoredLine(brick);
+    if OverColoredLine(brick)
+        brick.StopAllMotors('Brake')
+        break;
+    end
 end
 
 % Reactive Functions
@@ -29,7 +33,7 @@ function HitWall(Robot)
     end
 end
 
-function OverColoredLine(Robot)
+function TheFinishLine = OverColoredLine(Robot)
     if Robot.ColorCode(3) == 4
         pause(2);
         Robot.StopAllMotors('Brake');
@@ -40,7 +44,14 @@ function OverColoredLine(Robot)
         pause(3);
         MoveForward(Robot);
         pause(3);
+    elseif Robot.ColorCode(3) == 3
+        pause(2);
+        TheFinishLine = true;
+        return
     end
+
+    TheFinishLine = false;
+    return
 end
 
 function Check = CheckWallOnRight(Robot)
@@ -60,6 +71,8 @@ function PickUpClaw(Robot)
     pause(5);
     Robot.StopMotor('C','Brake');
 end
+
+
 % Turn Functions
 
 function MoveForward(Robot)
