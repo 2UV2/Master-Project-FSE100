@@ -1,15 +1,25 @@
-brick.ResetMotorAngle('A');
-brick.ResetMotorAngle('B');
 
-MoveForward(brick);
+Main(brick);
 
+% Main Function
+
+function Main(Robot)
+FinishLine = false;
+PickUpPerson = false;
+Nav = [];
+
+Robot.ResetMotorAngle('A');
+Robot.ResetMotorAngle('B');
+MoveForward(Robot);
 
 while true
-    HitWall(brick);
-    if OverColoredLine(brick)
-        brick.StopAllMotors('Brake')
+    HitWall(Robot);
+    if OverColoredLine(Robot)
+        Robot.StopAllMotors('Brake')
         break;
     end
+end
+
 end
 
 % Reactive Functions
