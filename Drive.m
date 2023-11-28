@@ -3,6 +3,7 @@ Main(brick);
 % Main Function
 
 function Main(Robot)
+Deboun = 0;
 FinishLine = false;
 PickUpPerson = false;
 Nav = [];
@@ -14,11 +15,20 @@ MoveForward(Robot);
     while true
         HitWall(Robot);
         if Robot.UltrasonicDist(4) > 40
-            FollowRightWall(Robot);
+            if Deboun == 0 
+                FollowRightWall(Robot,true);
+                Deboun = 1;
+            else
+                FollowRightWall(Robot,false);
+            end
         end
-        if OverColoredLine(Robot)
-            Robot.StopAllMotors('Brake')
-            break;
+        if OverPickUpLine(Robot,PickUpPerson)
+            PickUpPerson = true;
+
+            if OverFinishLine(Robot)
+                Robot.StopAllMotors('Brake')
+                break;
+            end
         end
     end
 end
@@ -44,7 +54,15 @@ function HitWall(Robot)
     end
 end
 
-function FollowRightWall(Robot)
+function FollowRightWall(Robot,FristTime)
+    if FristTime == true
+        Robot.StopAllMotors('Brake');
+        pause(1);
+        TurnRight(Robot);
+        pause(6);
+        MoveForward(Robot);
+        pause(7);
+    else
         pause(6);
         Robot.StopAllMotors('Brake');
         pause(1);
@@ -52,9 +70,11 @@ function FollowRightWall(Robot)
         pause(6);
         MoveForward(Robot);
         pause(7);
+    end
 end
 
-function TheFinishLine = OverColoredLine(Robot)
+function ThePickUp = OverPickUpLine(Robot,deboun)
+if deboun == false
     if Robot.ColorCode(3) == 4
         pause(2);
         Robot.StopAllMotors('Brake');
@@ -65,7 +85,20 @@ function TheFinishLine = OverColoredLine(Robot)
         pause(3);
         MoveForward(Robot);
         pause(3);
-    elseif Robot.ColorCode(3) == 3
+        ThePickUp = true;
+        return
+    end
+elseif deboun == true
+    ThePickUp = true;
+    return
+end
+
+    ThePickUp = false;
+    return
+end
+
+function TheFinishLine = OverFinishLine(Robot)
+    if Robot.ColorCode(3) == 3
         pause(2);
         TheFinishLine = true;
         return
@@ -108,20 +141,20 @@ end
 
 function TurnRight(Robot)
     Robot.ResetMotorAngle('A');
-    Robot.MoveMotorAngleRel('A',100,1935, 'Brake');
+    Robot.MoveMotorAngleRel('A',100,1940, 'Brake');
 end
 
 
 function TurnLeft(Robot)
     Robot.ResetMotorAngle('B');
-    Robot.MoveMotorAngleRel('B',100,1935, 'Brake');
+    Robot.MoveMotorAngleRel('B',100,1940, 'Brake');
 end
 
 function TurnAround(Robot)
     Robot.ResetMotorAngle('A');
-    Robot.MoveMotorAngleRel('A',100,1935, 'Brake');
+    Robot.MoveMotorAngleRel('A',100,1940, 'Brake');
     pause(6);
     Robot.ResetMotorAngle('A');
-    Robot.MoveMotorAngleRel('A',100,1935, 'Brake');
+    Robot.MoveMotorAngleRel('A',100,1940, 'Brake');
     pause(6);
 end
